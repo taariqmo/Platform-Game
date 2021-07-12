@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Src/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Src/Foreground.tscn" type="PackedScene" id=2]
 
 [node name="Game" type="Node2D"]
 scale = Vector2( 3, 3 )
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
-position = Vector2( 168.196, 90.7551 )
+position = Vector2( 219.529, 59.7551 )
+gravity = 1
+
+[node name="Foreground" parent="." instance=ExtResource( 2 )]

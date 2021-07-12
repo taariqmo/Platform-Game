@@ -6,6 +6,7 @@ extends KinematicBody2D
 # var b = "text"
 var velocity := Vector2.ZERO
 export var walk_speed := 100
+export var gravity := 2000
 
 func change_animation():
 	if velocity.x == 0:
@@ -28,7 +29,8 @@ func _physics_process(delta):
 	if Input.is_action_pressed("walk_right"):
 		x += walk_speed
 	velocity.x = x
-	position.x += velocity.x * delta
+	velocity.y += gravity * delta
+	position += velocity * delta
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
