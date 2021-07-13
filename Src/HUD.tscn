@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Src/Coin.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Src/HUD.gd" type="Script" id=2]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource( 2 )
+
+[node name="Coin" parent="." instance=ExtResource( 1 )]
+position = Vector2( 11.6541, 10.3298 )
+
+[node name="CoinCount" type="Label" parent="."]
+margin_left = 19.0
+margin_top = 4.0
+margin_right = 53.0
+margin_bottom = 18.0
+text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
