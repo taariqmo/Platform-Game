@@ -29,8 +29,9 @@ func _physics_process(delta):
 	if Input.is_action_pressed("walk_right"):
 		x += walk_speed
 	velocity.x = x
-	velocity.y += gravity * delta
-	position += velocity * delta
+	velocity.y += gravity
+	#position += velocity * delta
+	velocity = move_and_slide(velocity, Vector2.UP)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
