@@ -19,6 +19,7 @@ func _ready():
 func _on_Coin_body_entered(body):
 	if body.name == "Player" and not $AudioStreamPlayer.playing:
 		$AudioStreamPlayer.play()
+		$CollisionShape2D.queue_free()
 		body.collect_coin()
 
 
