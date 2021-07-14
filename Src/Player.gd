@@ -16,7 +16,6 @@ func change_animation():
 	if is_on_floor():
 		if velocity.x == 0:
 			$AnimatedSprite.play("Idle")
-			print("Idle")
 		else:
 			$AnimatedSprite.play("Walk")
 			if velocity.x < 0:
@@ -46,7 +45,6 @@ func _physics_process(delta):
 	if abs(velocity.x) < idle_threshold:
 		velocity.x = 0
 	velocity = move_and_slide(velocity, Vector2.UP)
-	print(velocity.x)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

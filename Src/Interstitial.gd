@@ -1,4 +1,4 @@
-extends Node2D
+extends CanvasLayer
 
 
 # Declare member variables here. Examples:
@@ -10,11 +10,11 @@ extends Node2D
 func _ready():
 	pass # Replace with function body.
 
+func set_level(level):
+	$Level.text = "Level: " + str(level)
 
+func victory():
+	$Level.text = "You Win!"
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
-
-
-func _on_Button_pressed():
-	get_tree().change_scene("res://src/Game.tscn")

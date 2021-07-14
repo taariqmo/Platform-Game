@@ -4,7 +4,7 @@ extends Node2D
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-
+export var finish = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,5 +16,5 @@ func _ready():
 #	pass
 
 
-func _on_Button_pressed():
-	get_tree().change_scene("res://src/Game.tscn")
+func _on_Flag_win():
+	finish = true

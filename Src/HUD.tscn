@@ -52,5 +52,5 @@ __meta__ = {
 position = Vector2( 12, 9 )
 frames = SubResource( 7 )
 animation = "Spin"
-frame = 2
+frame = 1
 playing = true

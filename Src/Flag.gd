@@ -1,10 +1,10 @@
-extends Node2D
+extends Area2D
 
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-
+signal win
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,5 +16,6 @@ func _ready():
 #	pass
 
 
-func _on_Button_pressed():
-	get_tree().change_scene("res://src/Game.tscn")
+func _on_Flag_body_entered(body):
+	if body.name == "Player":
+		emit_signal("win")
