@@ -10,6 +10,8 @@ export var jump_speed := 750
 export var traction := 0.05
 export var gravity := 2000
 export var coins := 0
+export var lives := 3
+export var done := false
 export var idle_threshold := 0.1
 
 func change_animation():
@@ -45,6 +47,9 @@ func _physics_process(delta):
 	if abs(velocity.x) < idle_threshold:
 		velocity.x = 0
 	velocity = move_and_slide(velocity, Vector2.UP)
+	var level = get_parent()
+	if not done and level.event_horizon < position.y:
+		die()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -53,3 +58,18 @@ func _process(delta):
 func collect_coin():
 	coins += 1
 	$HUD.set_coins(coins)
+
+func die():
+	if not done and not $AudioStreamPlayer.playing:
+		$AudioStreamPlayer.play()
+
+func refresh():
+	$HUD.set_coins(coins)
+	$HUD.set_lives(lives)
+
+
+func _on_AudioStreamPlayer_finished():
+	lives -= 1
+	$HUD.set_lives(lives)
+	get_parent().loss = true
+	done = true

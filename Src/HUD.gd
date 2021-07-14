@@ -12,6 +12,9 @@ func _ready():
 
 func set_coins(coins):
 	$CoinCount.text = str(coins)
+
+func set_lives(lives):
+	$LifeCount.text = str(lives)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

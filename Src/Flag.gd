@@ -17,5 +17,10 @@ func _ready():
 
 
 func _on_Flag_body_entered(body):
-	if body.name == "Player":
-		emit_signal("win")
+	if body.name == "Player" and not $AudioStreamPlayer.playing:
+		$AudioStreamPlayer.play()
+		body.done = true
+
+
+func _on_AudioStreamPlayer_finished():
+	emit_signal("win")

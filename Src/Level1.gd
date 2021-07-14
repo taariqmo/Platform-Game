@@ -4,7 +4,9 @@ extends Node2D
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-export var finish = false
+export var win = false
+export var loss = false
+export var event_horizon = 1000
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,4 +19,4 @@ func _ready():
 
 
 func _on_Flag_win():
-	finish = true
+	win = true
