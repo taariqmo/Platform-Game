@@ -15,6 +15,9 @@ func set_level(level):
 
 func victory():
 	$Level.text = "You Win!"
+
+func game_over():
+	$Level.text = "Game Over"
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
