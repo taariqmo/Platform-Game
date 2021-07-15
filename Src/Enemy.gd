@@ -11,8 +11,12 @@ export var traction := 0.05
 export var gravity := 2000
 export var done := false
 export var idle_threshold := 0.1
-var go_left := false
+var go_left := true
 var go_right := false
+export var walk_range := 32
+var start := Vector2.ZERO
+export var latency := 0.1
+onready var latency_remaining := latency
 
 func change_animation():
 	if is_on_floor():
@@ -29,9 +33,24 @@ func change_animation():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	start = position
+
+func think(delta):
+	if latency_remaining > 0:
+		latency_remaining = max(0.0, latency_remaining - delta)
+		return
+	else:
+		latency_remaining = latency
+	var distance := start.x - position.x
+	if distance > walk_range or is_on_wall() and go_right:
+		go_right = false
+		go_left = true
+	if distance < -walk_range or is_on_wall() and go_left:
+		go_right = true
+		go_left = false
 
 func _physics_process(delta):
+	think(delta)
 	var x = 0
 	if go_left:
 		x -= walk_speed
@@ -52,7 +71,7 @@ func _physics_process(delta):
 		var collision = get_slide_collision(i)
 		var collider = collision.collider
 		if collider.name == "Player":
-			pass
+			collider.hit()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

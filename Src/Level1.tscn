@@ -39,6 +39,6 @@ position = Vector2( 966.615, 54.4472 )
 position = Vector2( 313.019, 42.0473 )
 
 [node name="Enemy" parent="." instance=ExtResource( 7 )]
-position = Vector2( 361.074, 39.3777 )
+position = Vector2( 346.39, 39.3777 )
 
 [connection signal="win" from="Flag" to="." method="_on_Flag_win"]

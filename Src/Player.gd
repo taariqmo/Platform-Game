@@ -11,11 +11,19 @@ export var traction := 0.05
 export var gravity := 2000
 export var coins := 0
 export var lives := 3
+export var health := 3
 export var done := false
 export var idle_threshold := 0.1
+var was_hit := false
 
 func change_animation():
-	if is_on_floor():
+	if was_hit:
+		if $AnimatedSprite.animation == "Hit":
+			if not $AnimatedSprite.playing:
+				was_hit = false
+		else:
+			$AnimatedSprite.play("Hit")
+	elif is_on_floor():
 		if velocity.x == 0:
 			$AnimatedSprite.play("Idle")
 		else:
@@ -84,3 +92,21 @@ func stop_timer():
 func collect_life():
 	lives += 1
 	$HUD.set_lives(lives)
+
+func lose_health():
+	health -= 1
+	$HUD.set_health(health)
+	if health == 0:
+		die()
+
+func hit():
+	if was_hit == false:
+		was_hit = true
+		lose_health()
+
+
+func _on_AnimatedSprite_animation_finished():
+	print("Was unhit")
+	if $AnimatedSprite.animation == "Hit":
+		$AnimatedSprite.stop()
+		was_hit = false
