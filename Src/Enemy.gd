@@ -9,10 +9,10 @@ export var walk_speed := 100
 export var jump_speed := 750
 export var traction := 0.05
 export var gravity := 2000
-export var coins := 0
-export var lives := 3
 export var done := false
 export var idle_threshold := 0.1
+var go_left := false
+var go_right := false
 
 func change_animation():
 	if is_on_floor():
@@ -29,16 +29,14 @@ func change_animation():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$Camera2D.smoothing_enabled = true
+	pass
 
 func _physics_process(delta):
 	var x = 0
-	if Input.is_action_pressed("walk_left"):
+	if go_left:
 		x -= walk_speed
-	if Input.is_action_pressed("walk_right"):
+	if go_right:
 		x += walk_speed
-	if is_on_floor() and Input.is_action_just_pressed("jump"):
-		velocity.y -= jump_speed
 	#velocity.x = x
 	#velocity.x += (x - velocity.x) * traction
 	velocity.x = lerp(velocity.x, x, traction)
@@ -50,37 +48,19 @@ func _physics_process(delta):
 	var level = get_parent()
 	if not done and level.event_horizon < position.y:
 		die()
+	for i in get_slide_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.collider
+		if collider.name == "Player":
+			pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	change_animation()
 
-func collect_coin():
-	coins += 1
-	$HUD.set_coins(coins)
-
 func die():
 	if not done and not $AudioStreamPlayer.playing:
 		$AudioStreamPlayer.play()
-		$HUD.stop_timer()
-
-func refresh():
-	$HUD.set_coins(coins)
-	$HUD.set_lives(lives)
-
 
 func _on_AudioStreamPlayer_finished():
-	lives -= 1
-	$HUD.set_lives(lives)
-	get_parent().loss = true
 	done = true
-
-func get_time():
-	$HUD.get_time()
-
-func stop_timer():
-	$HUD.stop_timer()
-
-func collect_life():
-	lives += 1
-	$HUD.set_lives(lives)

@@ -15,6 +15,12 @@ func set_coins(coins):
 
 func set_lives(lives):
 	$LifeCount.text = str(lives)
+
+func get_time():
+	return $Timer.time
+
+func stop_timer():
+	$Timer.stop_timer()
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
