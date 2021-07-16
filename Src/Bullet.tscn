@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Src/Bullet.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Clean-Retro-Lines-Player.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 1.49094, 1.54019 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 2 )
+region = Rect2( 32, 32, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 2 ) ],
+"loop": true,
+"name": "Bullet",
+"speed": 5.0
+} ]
+
+[node name="Bullet" type="Area2D"]
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -0.0556812, -0.0556812 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 5.45675, -1.55907 )
+frames = SubResource( 3 )
+animation = "Bullet"
+
+[connection signal="body_entered" from="." to="." method="_on_Bullet_body_entered"]

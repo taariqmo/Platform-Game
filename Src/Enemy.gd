@@ -5,7 +5,7 @@ extends KinematicBody2D
 # var a = 2
 # var b = "text"
 var velocity := Vector2.ZERO
-export var walk_speed := 100
+export var walk_speed := 20
 export var jump_speed := 750
 export var traction := 0.05
 export var gravity := 2000
@@ -13,10 +13,11 @@ export var done := false
 export var idle_threshold := 0.1
 var go_left := true
 var go_right := false
-export var walk_range := 32
+export var walk_range := 64
 var start := Vector2.ZERO
 export var latency := 0.1
 onready var latency_remaining := latency
+onready var Coin = load("res://Src/Coin.tscn")
 
 func change_animation():
 	if is_on_floor():
@@ -25,9 +26,9 @@ func change_animation():
 		else:
 			$AnimatedSprite.play("Walk")
 			if velocity.x < 0:
-				$AnimatedSprite.flip_h = true
-			else:
 				$AnimatedSprite.flip_h = false
+			else:
+				$AnimatedSprite.flip_h = true
 	else:
 		$AnimatedSprite.play("Jump")
 
@@ -36,29 +37,29 @@ func _ready():
 	start = position
 
 func think(delta):
-	if latency_remaining > 0:
+	"""if latency_remaining > 0:
 		latency_remaining = max(0.0, latency_remaining - delta)
 		return
 	else:
-		latency_remaining = latency
-	var distance := start.x - position.x
-	if distance > walk_range or is_on_wall() and go_right:
-		go_right = false
-		go_left = true
-	if distance < -walk_range or is_on_wall() and go_left:
-		go_right = true
-		go_left = false
+		latency_remaining = latency"""
+	if is_on_wall():
+		go_right = not go_right
+		go_left = not go_left
 
 func _physics_process(delta):
-	think(delta)
 	var x = 0
-	if go_left:
-		x -= walk_speed
-	if go_right:
-		x += walk_speed
+	if not done:
+		think(delta)
+		if go_left:
+			x -= walk_speed
+		if go_right:
+			x += walk_speed
 	#velocity.x = x
 	#velocity.x += (x - velocity.x) * traction
-	velocity.x = lerp(velocity.x, x, traction)
+	if done:
+		velocity.x = 0
+	else:
+		velocity.x = lerp(velocity.x, x, traction)
 	velocity.y += gravity * delta
 	#position += velocity * delta
 	if abs(velocity.x) < idle_threshold:
@@ -78,8 +79,12 @@ func _process(delta):
 	change_animation()
 
 func die():
-	if not done and not $AudioStreamPlayer.playing:
-		$AudioStreamPlayer.play()
-
-func _on_AudioStreamPlayer_finished():
 	done = true
+	$AnimatedSprite.flip_v = true
+	var timer = get_tree().create_timer(1)
+	yield(timer, "timeout")
+	var coin = Coin.instance()
+	coin.position = position
+	var parent = get_parent()
+	parent.add_child(coin)
+	queue_free()

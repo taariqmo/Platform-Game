@@ -15,9 +15,16 @@ export var health := 3
 export var done := false
 export var idle_threshold := 0.1
 var was_hit := false
+onready var Bullet = load("res://Src/Bullet.tscn")
 
 func change_animation():
-	if was_hit:
+	if not health:
+		$AnimatedSprite.play("Death")
+		if $AnimatedSprite.flip_h == true:
+			rotation_degrees = 90
+		else:
+			rotation_degrees = 270
+	elif was_hit:
 		if $AnimatedSprite.animation == "Hit":
 			if not $AnimatedSprite.playing:
 				was_hit = false
@@ -41,12 +48,13 @@ func _ready():
 
 func _physics_process(delta):
 	var x = 0
-	if Input.is_action_pressed("walk_left"):
-		x -= walk_speed
-	if Input.is_action_pressed("walk_right"):
-		x += walk_speed
-	if is_on_floor() and Input.is_action_just_pressed("jump"):
-		velocity.y -= jump_speed
+	if health:
+		if Input.is_action_pressed("walk_left"):
+			x -= walk_speed
+		if Input.is_action_pressed("walk_right"):
+			x += walk_speed
+		if is_on_floor() and Input.is_action_just_pressed("jump"):
+			velocity.y -= jump_speed
 	#velocity.x = x
 	#velocity.x += (x - velocity.x) * traction
 	velocity.x = lerp(velocity.x, x, traction)
@@ -58,6 +66,17 @@ func _physics_process(delta):
 	var level = get_parent()
 	if not done and level.event_horizon < position.y:
 		die()
+	elif health:
+		if Input.is_action_just_pressed("attack"):
+			var bullet = Bullet.instance()
+			bullet.position = position
+			if $AnimatedSprite.flip_h:
+				bullet.direction = -1
+				bullet.position.x -= $CollisionShape2D.shape.extents.x * 2
+			else:
+				bullet.position.x += $CollisionShape2D.shape.extents.x * 2
+				bullet.direction = 1
+			level.add_child(bullet)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -69,6 +88,7 @@ func collect_coin():
 
 func die():
 	if not done and not $AudioStreamPlayer.playing:
+		health = 0
 		$AudioStreamPlayer.play()
 		$HUD.stop_timer()
 
@@ -94,7 +114,7 @@ func collect_life():
 	$HUD.set_lives(lives)
 
 func lose_health():
-	health -= 1
+	health = max(health - 1, 0)
 	$HUD.set_health(health)
 	if health == 0:
 		die()
@@ -106,7 +126,6 @@ func hit():
 
 
 func _on_AnimatedSprite_animation_finished():
-	print("Was unhit")
 	if $AnimatedSprite.animation == "Hit":
 		$AnimatedSprite.stop()
 		was_hit = false
