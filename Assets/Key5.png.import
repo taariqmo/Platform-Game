@@ -1,0 +1,17 @@
+[remap]
+
+importer="texture_atlas"
+type="Texture"
+path="res://.import/Key5.png-03fb3192d4c1a5208bd2a2c8005f0b5e.res"
+group_file="res://Assets/keyatlas.png"
+valid=true
+[deps]
+
+
+source_file="res://Assets/Key5.png"
+dest_files=[ "res://.import/Key5.png-03fb3192d4c1a5208bd2a2c8005f0b5e.res" ]
+
+[params]
+
+atlas_file="res://Assets/keyatlas.png"
+import_mode=0

@@ -19,6 +19,6 @@ func _physics_process(delta):
 
 
 func _on_Bullet_body_entered(body):
-	if body.name == "Enemy":
+	if body.name == "Enemy" or body.name == "Enemy2" or body.name == "Enemy3":
 		body.die()
 	queue_free()

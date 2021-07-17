@@ -20,7 +20,6 @@ onready var latency_remaining := latency
 onready var Coin = load("res://Src/Coin.tscn")
 
 func change_animation():
-	if is_on_floor():
 		if velocity.x == 0:
 			$AnimatedSprite.play("Idle")
 		else:
@@ -29,8 +28,6 @@ func change_animation():
 				$AnimatedSprite.flip_h = false
 			else:
 				$AnimatedSprite.flip_h = true
-	else:
-		$AnimatedSprite.play("Jump")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -81,8 +78,8 @@ func _process(delta):
 func die():
 	done = true
 	$AnimatedSprite.flip_v = true
-	var timer = get_tree().create_timer(1)
-	yield(timer, "timeout")
+	var timer2 = get_tree().create_timer(1)
+	yield(timer2, "timeout")
 	var coin = Coin.instance()
 	coin.position = position
 	var parent = get_parent()

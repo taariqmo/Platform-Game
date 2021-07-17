@@ -16,6 +16,8 @@ export var done := false
 export var idle_threshold := 0.1
 var was_hit := false
 onready var Bullet = load("res://Src/Bullet.tscn")
+var invincible := false
+var key := 0
 
 func change_animation():
 	if not health:
@@ -113,16 +115,41 @@ func collect_life():
 	lives += 1
 	$HUD.set_lives(lives)
 
+func collect_speed_boost():
+	walk_speed += 100
+	var timer = get_tree().create_timer(10)
+	yield(timer, "timeout")
+	walk_speed -= 100
+
+func collect_jump_boost():
+	jump_speed += 250
+	var timer = get_tree().create_timer(10)
+	yield(timer, "timeout")
+	jump_speed -= 250
+
+func collect_star():
+	invincible = true
+	$Invincible.play()
+	var timer = get_tree().create_timer(10)
+	yield(timer, "timeout")
+	$Invincible.stop()
+	invincible = false
+
+func collect_key(id):
+	key = id
+
 func lose_health():
-	health = max(health - 1, 0)
-	$HUD.set_health(health)
-	if health == 0:
-		die()
+	if done == false:
+		health = max(health - 1, 0)
+		$HUD.set_health(health)
+		if health == 0:
+			die()
 
 func hit():
-	if was_hit == false:
-		was_hit = true
-		lose_health()
+	if invincible == false:
+		if was_hit == false:
+			was_hit = true
+			lose_health()
 
 
 func _on_AnimatedSprite_animation_finished():

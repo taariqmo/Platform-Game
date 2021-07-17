@@ -7,6 +7,7 @@ extends Node2D
 export var current_level = 0
 export var coins := -1
 export var lives := -1
+export var special_threshold := 1000
 
 func back_to_main():
 	var timer := get_tree().create_timer(10)
@@ -14,15 +15,22 @@ func back_to_main():
 	get_tree().change_scene("res://Src/Main.tscn")
 
 func next_level(increment):
+	var key := 0
 	if $Level:
 		var player = $Level.get_node("Player")
 		assert(current_level == 0 or player)
 		coins = player.coins
 		lives = player.lives
-	current_level += increment
+		if player.health:
+			key = player.key
+		player.key = 0
+	if key:
+		current_level = key
+	else:
+		current_level += increment
 	for node in get_children():
 		node.queue_free()
-	var interstitial := load ("res://Src/interstitial.tscn")
+	var interstitial := load ("res://Src/Interstitial.tscn")
 	var interstitial_scene = interstitial.instance()
 	interstitial_scene.set_level(current_level)
 	add_child(interstitial_scene)
@@ -32,7 +40,10 @@ func next_level(increment):
 		return
 	var level := load("res://Src/Level" + str(current_level) + ".tscn")
 	if not level:
-		interstitial_scene.victory()
+		if current_level >= special_threshold:
+			interstitial_scene.special_victory()
+		else:
+			interstitial_scene.victory()
 		back_to_main()
 		return
 	var timer := get_tree().create_timer(5)
