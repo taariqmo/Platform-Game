@@ -16,11 +16,17 @@ func back_to_main():
 
 func next_level(increment):
 	var key := 0
+	var powerups_collected := 0
+	var enemies_killed := 0
+	var bullets_fired := 0
 	if $Level:
 		var player = $Level.get_node("Player")
 		assert(current_level == 0 or player)
 		coins = player.coins
 		lives = player.lives
+		powerups_collected = player.powerups_collected
+		enemies_killed = player.enemies_killed
+		bullets_fired = player.bullets_fired
 		if player.health:
 			key = player.key
 		player.key = 0
@@ -32,11 +38,16 @@ func next_level(increment):
 		node.queue_free()
 	var interstitial := load ("res://Src/Interstitial.tscn")
 	var interstitial_scene = interstitial.instance()
+	interstitial_scene.lives_remaining = lives
+	interstitial_scene.coins_collected = coins
+	interstitial_scene.powerups_collected = powerups_collected
+	interstitial_scene.enemies_killed = enemies_killed
+	interstitial_scene.bullets_fired = bullets_fired
+	interstitial_scene.level = current_level
 	interstitial_scene.set_level(current_level)
 	add_child(interstitial_scene)
 	if $Level and lives < 0:
 		interstitial_scene.game_over()
-		back_to_main()
 		return
 	var level := load("res://Src/Level" + str(current_level) + ".tscn")
 	if not level:
@@ -44,7 +55,6 @@ func next_level(increment):
 			interstitial_scene.special_victory()
 		else:
 			interstitial_scene.victory()
-		back_to_main()
 		return
 	var timer := get_tree().create_timer(5)
 	yield(timer, "timeout")

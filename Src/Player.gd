@@ -10,6 +10,7 @@ export var jump_speed := 750
 export var traction := 0.05
 export var gravity := 2000
 export var coins := 0
+export var ammo := 20
 export var lives := 3
 export var health := 3
 export var done := false
@@ -18,6 +19,9 @@ var was_hit := false
 onready var Bullet = load("res://Src/Bullet.tscn")
 var invincible := false
 var key := 0
+var powerups_collected := 0
+var enemies_killed := 0
+var bullets_fired := 0
 
 func change_animation():
 	if not health:
@@ -69,7 +73,9 @@ func _physics_process(delta):
 	if not done and level.event_horizon < position.y:
 		die()
 	elif health:
-		if Input.is_action_just_pressed("attack"):
+		if Input.is_action_just_pressed("attack") and not ammo <= 0:
+			ammo = max(ammo - 1, 0)
+			$HUD.set_ammo(ammo)
 			var bullet = Bullet.instance()
 			bullet.position = position
 			if $AnimatedSprite.flip_h:
@@ -79,6 +85,7 @@ func _physics_process(delta):
 				bullet.position.x += $CollisionShape2D.shape.extents.x * 2
 				bullet.direction = 1
 			level.add_child(bullet)
+			bullets_fired += 1
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -87,6 +94,10 @@ func _process(delta):
 func collect_coin():
 	coins += 1
 	$HUD.set_coins(coins)
+
+func collect_ammo():
+	ammo += 1
+	$HUD.set_ammo(ammo)
 
 func die():
 	if not done and not $AudioStreamPlayer.playing:
@@ -114,18 +125,21 @@ func stop_timer():
 func collect_life():
 	lives += 1
 	$HUD.set_lives(lives)
+	powerups_collected += 1
 
 func collect_speed_boost():
 	walk_speed += 100
 	var timer = get_tree().create_timer(10)
 	yield(timer, "timeout")
 	walk_speed -= 100
+	powerups_collected += 1
 
 func collect_jump_boost():
 	jump_speed += 250
 	var timer = get_tree().create_timer(10)
 	yield(timer, "timeout")
 	jump_speed -= 250
+	powerups_collected += 1
 
 func collect_star():
 	invincible = true
@@ -134,9 +148,11 @@ func collect_star():
 	yield(timer, "timeout")
 	$Invincible.stop()
 	invincible = false
+	powerups_collected += 1
 
 func collect_key(id):
 	key = id
+	powerups_collected += 1
 
 func lose_health():
 	if done == false:
@@ -156,3 +172,10 @@ func _on_AnimatedSprite_animation_finished():
 	if $AnimatedSprite.animation == "Hit":
 		$AnimatedSprite.stop()
 		was_hit = false
+
+
+func _on_Area2D_body_entered(body):
+	print("hit")
+	if invincible and body.name.find("Enemy") >= 0:
+		enemies_killed += 1
+		body.die()

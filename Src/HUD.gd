@@ -24,6 +24,9 @@ func stop_timer():
 
 func set_health(health):
 	$HealthMeter.text = str(health)
+
+func set_ammo(ammo):
+	$AmmoCount.text = str(ammo)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

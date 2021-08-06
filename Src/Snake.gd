@@ -11,13 +11,15 @@ export var traction := 0.05
 export var gravity := 2000
 export var done := false
 export var idle_threshold := 0.1
-var go_left := true
-var go_right := false
+var go_left := false
+var go_right := true
 export var walk_range := 64
 var start := Vector2.ZERO
 export var latency := 0.1
 onready var latency_remaining := latency
 onready var Coin = load("res://Src/Coin.tscn")
+onready var Ammo = load("res://Src/Ammo.tscn")
+var rng = RandomNumberGenerator.new()
 
 func change_animation():
 		if velocity.x == 0:
@@ -32,6 +34,7 @@ func change_animation():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	start = position
+	rng.randomize()
 
 func think(delta):
 	"""if latency_remaining > 0:
@@ -80,8 +83,14 @@ func die():
 	$AnimatedSprite.flip_v = true
 	var timer = get_tree().create_timer(1)
 	yield(timer, "timeout")
-	var coin = Coin.instance()
-	coin.position = position
-	var parent = get_parent()
-	parent.add_child(coin)
+	if rng.randf() <= 0.2:
+		var ammo = Ammo.instance()
+		ammo.position = position
+		var parent = get_parent()
+		parent.add_child(ammo)
+	else:
+		var coin = Coin.instance()
+		coin.position = position
+		var parent = get_parent()
+		parent.add_child(coin)
 	queue_free()

@@ -128,7 +128,7 @@ rotation = 4.71239
 scale = Vector2( 0.5, 0.5 )
 frames = SubResource( 22 )
 animation = "Jump"
-frame = 1
+frame = 7
 playing = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

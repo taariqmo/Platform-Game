@@ -1,28 +1,21 @@
-extends Area2D
+extends Node2D
 
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-export var speed := 1000
-var direction := 1
-var enemies := 0
-var bullets := 0
+export var win = false
+export var loss = false
+export var event_horizon = 1000
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-func _physics_process(delta):
-	position.x += speed * delta * direction
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
 
-
-func _on_Bullet_body_entered(body):
-	if body.name.find("Enemy") >= 0:
-		enemies += 1
-		body.die()
-	bullets += 1
-	queue_free()
+func on_Flag_win():
+	win = true
